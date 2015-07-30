@@ -1,0 +1,13 @@
+Client/bower_components
+Client/node_modules
+Client/test
+Client/npm-debug.log
+bin
+obj
+.ntvs_analysis.dat
+Stack.njsproj
+public
+node_modules
+Client/.bowerrc
+.vs
+Stack.sln
