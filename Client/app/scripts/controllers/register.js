@@ -17,9 +17,10 @@ angular.module('chatwebApp')
                 data : $.param($scope.model), 
                 headers : { 'Content-Type': 'application/x-www-form-urlencoded' }
             }).success(function (data, status, headers, config) {
-                if (typeof data.IsSuccess != 'undefined' && data.IsSuccess) {
+                if (data.IsSuccess) {
                     window.location.hash = '/';
-                    appService.showMessage("Successfuly registered.")
+                } else {
+                    appService.showMessage(data.Message)
                 }
             }).error(function (data, status, headers, config) {
                 appService.showMessage("some thing wrong happen");

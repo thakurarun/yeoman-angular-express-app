@@ -8,8 +8,9 @@
  * Controller of the chatwebApp
  */
 angular.module('chatwebApp')
-  .controller('LoginCtrl', ['$scope', '$http','appService', function ($scope, $http,appService) {
+  .controller('LoginCtrl', ['$scope', '$http','appService','localStorageService', function ($scope, $http,appService, localStorageService) {
         $scope.service = appService;
+        localStorageService.set('isLoggedIn',false);
         $scope.processLogin = function () {
             $http({
                 method  : 'POST', 
@@ -19,7 +20,7 @@ angular.module('chatwebApp')
             }).success(function (data, status, headers, config) {
                 if (typeof data.IsSuccess != 'undefined') {
                     if (data.IsSuccess) {
-                         window.location.hash = 'inside';
+                         window.location.hash = '/';
                     }
                     else {
                         appService.showMessage(data.Message)

@@ -1,13 +1,4 @@
 'use strict';
-
-/**
- * @ngdoc overview
- * @name chatwebApp
- * @description
- * # chatwebApp
- *
- * Main module of the application.
- */
 var App = angular
   .module('chatwebApp', [
     'ngAnimate',
@@ -15,9 +6,12 @@ var App = angular
     'ngResource',
     'ngRoute',
     'ngSanitize',
-    'ngTouch'
-])
-  .config(function ($routeProvider) {
+    'ngTouch',
+    'LocalStorageModule'
+]).config(function ($routeProvider, localStorageServiceProvider) {
+    localStorageServiceProvider.setPrefix('chatwebApp')
+    .setStorageType('sessionStorage')
+    .setNotify(true, true);
     $routeProvider
     .when('/login', {
         templateUrl: 'views/login.html',
@@ -27,17 +21,18 @@ var App = angular
      .when('/', {
         templateUrl: 'views/dashboard.html',
         controller: 'DashboardCtrl',
-        controllerAs: 'dashboard'
+        controllerAs: 'dashboard',
+        resolve : Authorize
     })
     .when('/register', {
         templateUrl: 'views/register.html',
         controller: 'RegisterCtrl',
         controllerAs: 'register'
     })
-      .when('/main', {
+      .when('/base', {
         //templateUrl: 'views/main.html',  //main controller will be used to inject common services...
-        controller: 'MainCtrl',
-        controllerAs: 'main'
+        controller: 'BaseCtrl',
+        controllerAs: 'base'
     })
       .when('/about', {
         templateUrl: 'views/about.html',
@@ -47,23 +42,20 @@ var App = angular
       .otherwise({
         redirectTo: '/'
     });
-});
-App.service('appService', function () {
-    return {
-        hideMessage : function () {
-            $("#message-box").fadeOut(100, function () {
-                $("#message-box span").remove();
+})
+
+
+
+var Authorize = {
+    authenticate : ["$location", "AuthenticationService", function ($location, AuthenticationService) {
+            var p = AuthenticationService.authenticate();
+            p.then(function (result) { 
+                if (!result) {
+                    $location.path('login');
+                } 
+            }, function (result) { 
+                $location.path('login');
             });
-        },
-        showMessage : function (message) {
-            if ($("#message-box span").length == 0) {
-                $("#message-box").fadeIn(100);
-                var span = $("<span/>").html("<strong>Info: </strong>" + message);
-                $("#message-box").append(span);
-            } else {
-                $("#message-box span").html("<strong>Info: </strong>" + message)
-            }
-           
-        }
-    }
-});
+            return p;
+        }]
+}

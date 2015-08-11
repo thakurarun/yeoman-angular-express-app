@@ -12,4 +12,18 @@ router.get('/dashoard', function (req, res) {
     res.send({ IsSuccess: true })
 });
 
+router.post('/logout', function (req, res) {
+    if (req.headers.__auth) {
+        if (jwt.verify(req.headers.__auth, config.secret)) {
+            res.cookie('__auth', req.headers.__auth, { maxAge: -1, httpOnly: false });
+            res.send({ IsValid: false });
+        } else {
+            res.send({ IsValid: false });
+        }
+    } else {
+        res.send({ IsValid: false });
+    }
+});
+
+
 module.exports = router;

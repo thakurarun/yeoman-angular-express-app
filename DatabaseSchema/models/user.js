@@ -23,4 +23,8 @@ userSchema.statics.authenticate = function (credentials, callback) {
         }
     });
 }
+userSchema.statics.findByCriteria = function (criteria){
+    var promise = this.findOne(criteria);
+    return promise;
+}
 exports.User = mongoose.model('User', userSchema);
